@@ -33,7 +33,7 @@ function injectStyles() {
   `));
 }
 function showSetupNotice() {
-  const n = $("div", { class: "nova-cloud-setup" }, 'NOVA cloud services are not configured yet. Google sign-in, account storage, activity logging and chatbot require Firebase setup. <a href="FIREBASE_SETUP.md">Setup guide</a>');
+  const n = $("div", { class: "nova-cloud-setup" }, 'NOVA cloud services are not configured yet. Google sign-in, account storage, activity logging and chatbot require Firebase setup. <a href="https://github.com/NovaOS-original/nova-os-website/blob/main/FIREBASE_SETUP.md">Setup guide</a>');
   document.body.appendChild(n);
 }
 function log(type, metadata = {}) {
@@ -52,7 +52,7 @@ function openTerms({ signedIn = false, error = "" } = {}) {
     <p><b>Activity logs.</b> NOVA records limited event metadata (such as page views, video generation events, and chatbot requests) with a timestamp. We do not intentionally log every click, keystroke, prompt, full chatbot message, password, or token. Activity logs are intended to expire after 90 days once the documented Firestore TTL policy is enabled.</p>
     <p><b>AI processing.</b> Prompts and uploaded images may be sent to third-party AI providers to generate results. Chat messages are sent to Google's Gemini API to answer you; message contents are not intentionally stored in NOVA activity logs. Do not submit sensitive or confidential information.</p>
     <p><b>Use and availability.</b> Do not use NOVA for illegal, abusive, infringing, or malicious activity. The service and AI output are experimental and provided without guarantees of accuracy or uninterrupted availability. Third-party provider terms also apply.</p>
-    <p><b>Your choices.</b> You can sign out. Contact the maintainers via the <a href="https://github.com/NovaOS-original/nova-os-website/issues" target="_blank" rel="noopener">NOVA GitHub issues</a> for data access or deletion requests. Read the <a href="TERMS.md" target="_blank" rel="noopener">full Terms & Privacy Notice</a>.</p>
+    <p><b>Your choices.</b> You can sign out. Contact the maintainers via the <a href="https://github.com/NovaOS-original/nova-os-website/issues" target="_blank" rel="noopener">NOVA GitHub issues</a> for data access or deletion requests. Read the <a href="https://github.com/NovaOS-original/nova-os-website/blob/main/TERMS.md" target="_blank" rel="noopener">full Terms & Privacy Notice</a>.</p>
   `));
   const check = $("input", { type: "checkbox", id: "nova-terms-accept" });
   const label = $("label", { class: "nova-cloud-check", for: "nova-terms-accept" });
