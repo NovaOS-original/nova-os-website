@@ -4,10 +4,24 @@ on:
   push:
     paths:
       - "video-studio/**"
+      - "nova-cloud.js"
+      - "firebase-config.js"
+      - "firebase.json"
+      - "firestore.rules"
+      - "functions/**"
+      - "TERMS.md"
+      - "FIREBASE_SETUP.md"
       - ".github/workflows/video-studio-check.yml"
   pull_request:
     paths:
       - "video-studio/**"
+      - "nova-cloud.js"
+      - "firebase-config.js"
+      - "firebase.json"
+      - "firestore.rules"
+      - "functions/**"
+      - "TERMS.md"
+      - "FIREBASE_SETUP.md"
       - ".github/workflows/video-studio-check.yml"
   workflow_dispatch:
 
@@ -24,10 +38,39 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Check Python syntax
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check local engine Python syntax
         run: python -m py_compile video-studio/local-engine/generate.py
+      - name: Check backend JavaScript syntax
+        run: node --check functions/index.js
+      - name: Check browser module syntax
+        run: node --input-type=module --check < nova-cloud.js
+      - name: Check AI generator inline script syntax
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("video-studio/ai-generator.html").read_text()
+          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script>", html, re.S)
+          if not scripts:
+              raise SystemExit("No inline scripts found")
+          Path("/tmp/nova-ai-generator.js").write_text(scripts[-1])
+          PY
+          node --check /tmp/nova-ai-generator.js
       - name: Check required project files
         run: |
+          test -s index.html
+          test -s nova-cloud.js
+          test -s firebase-config.js
+          test -s firebase.json
+          test -s firestore.rules
+          test -s functions/index.js
+          test -s functions/package.json
+          test -s TERMS.md
+          test -s FIREBASE_SETUP.md
           test -s video-studio/index.html
           test -s video-studio/ai-generator.html
           test -s video-studio/README.md
