@@ -20,7 +20,7 @@ This mode creates procedural motion graphics and animated title scenes. It is no
 
 ## Free hosted AI generation (no user token)
 
-The AI generator calls a public LTX Video Gradio API hosted on Hugging Face Spaces. It supports text-to-video and image-to-video from the browser, without asking the user to register, paste an API token, connect a provider, or enter payment details.
+The AI generator calls a public LTX Video Gradio API hosted on Hugging Face Spaces. It supports text-to-video and image-to-video from the browser, without requiring a separate video-provider account, API token, provider connection, or payment details. If NOVA Firebase cloud accounts are configured, Google sign-in and acceptance of the current terms are required to use the site.
 
 1. Open `ai-generator.html`.
 2. Choose Text → Video or Image → Video.
