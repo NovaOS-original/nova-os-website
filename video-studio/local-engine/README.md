@@ -14,9 +14,13 @@ Official CogVideoX documentation lists substantially different memory needs by p
 ## Setup on Windows
 
 1. Install Python 3.11 and up-to-date NVIDIA drivers.
-2. Open the official PyTorch install selector at https://pytorch.org/get-started/locally/ and install a CUDA-enabled PyTorch build matching your machine.
-3. Open this folder in File Explorer and run `setup_windows.bat`. It creates a virtual environment and prints the remaining install steps.
-4. In a terminal opened in this folder, activate the environment and install the remaining requirements:
+2. Open this folder in File Explorer and run `setup_windows.bat`. It creates the `.venv` environment and prints the remaining install steps.
+3. In a terminal opened in this folder, activate the environment:
+
+   `\.venv\\Scripts\\Activate.ps1`
+
+4. Use the official [PyTorch install selector](https://pytorch.org/get-started/locally/) to install a CUDA-enabled PyTorch build **inside the activated `.venv`**. Follow its Windows + Pip + Python + CUDA options.
+5. Install the remaining packages:
 
    ```powershell
    .venv\Scripts\Activate.ps1
