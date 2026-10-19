@@ -60,4 +60,5 @@ $('export').addEventListener('click',async()=>{if(!generated){$('generate').clic
 $('downloadFrame').addEventListener('click',()=>{if(!generated)$('generate').click();canvas.toBlob(blob=>{if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nova-video-poster.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)},'image/png')});
 resizeCanvas();
 })();
-</script></body></html>
+</script>  <script type="module" src="../nova-cloud.js"></script>
+</body></html>
