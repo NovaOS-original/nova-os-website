@@ -29,6 +29,7 @@ jobs:
       - name: Check required project files
         run: |
           test -s video-studio/index.html
+          test -s video-studio/ai-generator.html
           test -s video-studio/README.md
           test -s video-studio/local-engine/index.html
           test -s video-studio/local-engine/README.md
