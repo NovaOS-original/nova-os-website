@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080b16"><title>NOVA AI Video Generator</title>
+<style>
+:root{color-scheme:dark;--bg:#080b16;--line:#2b3654;--text:#f4f6ff;--muted:#a5b1cf}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#29204f,transparent 40%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif}.wrap{max-width:1000px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-weight:850;letter-spacing:.08em}.tag{font-size:12px;color:#8cf3d2;border:1px solid #34545c;background:#0e252e;border-radius:99px;padding:6px 10px}.hero h1{font-size:clamp(32px,6vw,54px);line-height:1.06;letter-spacing:-.04em;margin:35px 0 10px}.hero h1 span{background:linear-gradient(90deg,#b7a2ff,#6eeafa);background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:760px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.panel{background:#11182ced;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{margin:0 0 15px}.field label{display:block;color:#d8def3;font-size:13px;margin-bottom:7px}input,textarea,select{width:100%;background:#090f20;color:var(--text);border:1px solid #34405f;border-radius:10px;padding:11px;font:inherit}textarea{min-height:105px;resize:vertical}input[type=file]{font-size:12px}button,.btn{display:inline-block;border:0;border-radius:11px;padding:12px 15px;font:inherit;font-weight:750;text-decoration:none;cursor:pointer}.primary{background:linear-gradient(100deg,#9a7bff,#66e8f2);color:#09101c}.secondary{background:#202943;color:#edf1ff;border:1px solid #354260}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}.note{font-size:12px;color:var(--muted)}.warn{border-left:3px solid #e9bd63;padding:10px 12px;background:#302615;color:#f3dfb4;border-radius:7px;font-size:13px}.status{margin-top:14px;color:#b8c5e1;min-height:24px;overflow-wrap:anywhere}.preview{margin-top:16px}.preview video{width:100%;max-height:540px;background:#050711;border-radius:12px}.preview[hidden]{display:none}.preview a,a.back{color:#c5b5ff}.foot{padding:24px 0;text-align:center;color:#7d8bad;font-size:12px}a.back{text-decoration:none;font-size:13px}@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:15px}.panel{padding:16px}}
+</style></head><body><main class="wrap">
+<header class="top"><div class="brand">✦ NOVA <span style="color:#a997ff">AI VIDEO</span></div><a class="back" href="./">← Back to Video Studio</a><span class="tag">AI MODELS · OPTIONAL TOKEN</span></header>
+<section class="hero"><h1>Generate real AI <span>video clips.</span></h1><p>Use supported Hugging Face Inference Providers for text-to-video, image-to-video, or image-plus-prompt video generation. This supplements NOVA's free browser motion-graphics editor and local Windows model runner.</p></section>
+<div class="warn"><b>Free does not mean unlimited.</b> Hugging Face lists a small monthly free inference credit (currently US$0.10 for free users, subject to change). Video generation can consume credits quickly or be unavailable for a selected model/provider. You need your own Hugging Face token with Inference Providers permission. Never paste a token into public code or share it.</div>
+<section class="grid"><div class="panel"><h2>1 · Connection</h2>
+<div class="field"><label for="token">Hugging Face access token</label><input id="token" type="password" autocomplete="off" placeholder="hf_…"></div>
+<div class="row"><button class="secondary" id="remember">Keep in this tab</button><button class="secondary" id="forget">Clear token</button></div>
+<p class="note">Token is held in this page's memory only; it is not saved to the repository. Requests go from your browser to Hugging Face and the selected provider. For public multi-user production, use a secured backend instead.</p>
+<div class="field"><label for="provider">Inference provider</label><select id="provider"><option value="fal-ai">fal.ai (via Hugging Face)</option><option value="replicate">Replicate (via Hugging Face)</option><option value="wavespeed">WaveSpeed (via Hugging Face)</option><option value="novita">Novita (via Hugging Face)</option><option value="auto">Auto / provider routing</option></select></div>
+<div class="field"><label for="mode">Generation mode</label><select id="mode"><option value="text">Text → Video</option><option value="image">Image → Video</option><option value="imageText">Image + prompt → Video</option></select></div>
+<div class="field"><label for="model">Model ID</label><input id="model" value="Wan-AI/Wan2.2-TI2V-5B" spellcheck="false"></div>
+<p class="note">Model/provider compatibility changes over time. Check <a href="https://huggingface.co/docs/inference-providers/en/tasks/text-to-video" target="_blank" rel="noopener">supported text-to-video models</a> and the <a href="https://huggingface.co/docs/huggingface.js/inference/modules" target="_blank" rel="noopener">JavaScript SDK reference</a>.</p>
+</div>
+<div class="panel"><h2>2 · Create a clip</h2>
+<div class="field"><label for="prompt">Prompt / motion description</label><textarea id="prompt" maxlength="1500">A cinematic drone shot slowly approaching a futuristic city at blue hour, realistic lighting, smooth camera motion</textarea></div>
+<div class="field" id="imageField" hidden><label for="image">Starting image (JPG, PNG, or WebP)</label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><div id="imagePreview" class="note"></div></div>
+<div class="field"><label for="negative">Negative prompt (optional)</label><input id="negative" placeholder="blurry, distorted, flicker, text artifacts"></div>
+<div class="row"><button id="generate" class="primary">Generate AI video ↗</button><button id="cancel" class="secondary" disabled>Cancel</button></div>
+<div id="status" class="status" role="status">Ready. Add your token and choose a mode.</div>
+<div class="preview" id="preview" hidden><h2>Generated clip</h2><video id="video" controls playsinline></video><p><a id="download" download="nova-ai-video.mp4">Download generated video</a></p><p class="note">Provider output format may vary. If the browser cannot play it, download and open it in a compatible player.</p></div>
+</div></section>
+<section class="panel" style="margin-top:16px"><h2>Other no-cost / open-model routes</h2><p class="note">For zero hosted inference charges, use the existing <a href="local-engine/">local CogVideoX engine setup</a> on a compatible NVIDIA GPU. Model weights are a large download and local generation needs capable hardware. Hosted free quotas are provider-controlled; unlimited free generations are not promised.</p><p><a href="https://huggingface.co/docs/inference-providers/pricing" target="_blank" rel="noopener">Hugging Face pricing and free credits ↗</a> · <a href="https://fal.ai/explore/image-to-video-apis" target="_blank" rel="noopener">fal image-to-video models and pricing ↗</a></p></section>
+<footer class="foot">NOVA Video Studio · Experimental API integration · Check model licenses and provider terms before commercial use.</footer>
+</main>
+<script type="module">
+import { InferenceClient } from "https://esm.sh/@huggingface/inference@4.7.1";
+const $=id=>document.getElementById(id);let aborter=null,videoUrl=null,rememberedToken='';
+function setStatus(s){$('status').textContent=s}
+function syncMode(){const m=$('mode').value;$('imageField').hidden=m==='text';$('model').value=m==='text'?'Wan-AI/Wan2.2-TI2V-5B':m==='image'?'Wan-AI/Wan2.1-I2V-14B-720P':'Lightricks/LTX-Video';$('prompt').placeholder=m==='image'?'Optional prompt if supported by the selected model':'Describe the desired motion and scene'}
+$('mode').addEventListener('change',syncMode);
+$('remember').addEventListener('click',()=>{rememberedToken=$('token').value.trim();setStatus(rememberedToken?'Token held in page memory for this tab.':'Paste a token first.')});
+$('forget').addEventListener('click',()=>{$('token').value='';rememberedToken='';setStatus('Token cleared from this page.')});
+$('image').addEventListener('change',()=>{const f=$('image').files[0];$('imagePreview').textContent=f?f.name+' · '+(f.size/1024/1024).toFixed(2)+' MB':''});
+$('cancel').addEventListener('click',()=>{if(aborter)aborter.abort();setStatus('Cancellation requested. The provider may already have started processing.');$('cancel').disabled=true});
+$('generate').addEventListener('click',async()=>{
+ const token=$('token').value.trim()||rememberedToken,mode=$('mode').value,model=$('model').value.trim(),prompt=$('prompt').value.trim(),provider=$('provider').value,image=$('image').files[0];
+ if(!token){setStatus('Add a Hugging Face access token with Inference Providers permission.');return}
+ if(!model){setStatus('Enter a model ID.');return}
+ if(mode!=='image'&&!prompt){setStatus('Enter a prompt.');return}
+ if(mode!=='text'&&!image){setStatus('Choose a starting image for image-to-video mode.');return}
+ if(image&&image.size>12*1024*1024){setStatus('Please use an image under 12 MB to reduce upload failures.');return}
+ aborter=new AbortController();$('generate').disabled=true;$('cancel').disabled=false;$('preview').hidden=true;setStatus('Connecting to provider. Video generation may take several minutes…');
+ try{
+  const client=new InferenceClient(token);const common={model,provider,signal:aborter.signal};let blob;
+  if(mode==='text')blob=await client.textToVideo({...common,inputs:prompt});
+  else if(mode==='image')blob=await client.imageToVideo({...common,inputs:image});
+  else blob=await client.imageTextToVideo({...common,inputs:{image:image,prompt:prompt}});
+  if(!(blob instanceof Blob)||blob.size===0)throw new Error('Provider returned an empty result. Try another model/provider or check task requirements.');
+  if(videoUrl)URL.revokeObjectURL(videoUrl);videoUrl=URL.createObjectURL(blob);$('video').src=videoUrl;$('download').href=videoUrl;
+  const ext=blob.type.includes('webm')?'webm':blob.type.includes('mp4')?'mp4':'mp4';$('download').download='nova-ai-video.'+ext;$('preview').hidden=false;setStatus('Generation complete · '+(blob.size/1024/1024).toFixed(2)+' MB · '+(blob.type||'video file'));
+ }catch(e){setStatus(e.name==='AbortError'?'Generation was cancelled.':'Generation failed: '+(e.message||e)+'. Check token permissions, provider/model support, free-credit balance, and model availability.')}
+ finally{$('generate').disabled=false;$('cancel').disabled=true;aborter=null}
+});
+syncMode();
+</script></body></html>
