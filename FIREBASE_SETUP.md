@@ -28,7 +28,10 @@ firebase deploy --only functions
 ~~~
 Paste the key only into the CLI prompt. Do not commit it, put it in firebase-config.js, or send it to the browser. Google AI API free quotas and availability can change; this is not an unlimited guarantee.
 
-## 4. Activate the web client after backend deployment\nAfter the functions and secret are deployed, copy the Web app configuration into the root firebase-config.js and replace every REPLACE_ value. Commit this file to GitHub. This activates Google sign-in and the terms gate across the website. Keep this file free of private keys and service-account credentials.\n\n## 5. Enable 90-day activity retention
+## 4. Activate the web client after backend deployment
+After the functions and secret are deployed, copy the Web app configuration into the root firebase-config.js and replace every REPLACE_ value. Commit this file to GitHub. This activates Google sign-in and the terms gate across the website. Keep this file free of private keys and service-account credentials.
+
+## 5. Enable 90-day activity retention
 In Google Cloud Console → Firestore → TTL, create TTL policies for collection groups activity and privateRateLimits on the expiresAt field. The backend adds that field 90 days after each activity event and rate-limit bucket. TTL deletion is asynchronous and may take additional time.
 
 ## 6. Test before public use
