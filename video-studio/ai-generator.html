@@ -3,18 +3,10 @@
 <style>
 :root{color-scheme:dark;--bg:#080b16;--line:#2b3654;--text:#f4f6ff;--muted:#a5b1cf}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#29204f,transparent 40%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif}.wrap{max-width:1000px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-weight:850;letter-spacing:.08em}.tag{font-size:12px;color:#8cf3d2;border:1px solid #34545c;background:#0e252e;border-radius:99px;padding:6px 10px}.hero h1{font-size:clamp(32px,6vw,54px);line-height:1.06;letter-spacing:-.04em;margin:35px 0 10px}.hero h1 span{background:linear-gradient(90deg,#b7a2ff,#6eeafa);background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:760px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.panel{background:#11182ced;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{margin:0 0 15px}.field label{display:block;color:#d8def3;font-size:13px;margin-bottom:7px}input,textarea,select{width:100%;background:#090f20;color:var(--text);border:1px solid #34405f;border-radius:10px;padding:11px;font:inherit}textarea{min-height:105px;resize:vertical}input[type=file]{font-size:12px}button,.btn{display:inline-block;border:0;border-radius:11px;padding:12px 15px;font:inherit;font-weight:750;text-decoration:none;cursor:pointer}.primary{background:linear-gradient(100deg,#9a7bff,#66e8f2);color:#09101c}.secondary{background:#202943;color:#edf1ff;border:1px solid #354260}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}.note{font-size:12px;color:var(--muted)}.warn{border-left:3px solid #e9bd63;padding:10px 12px;background:#302615;color:#f3dfb4;border-radius:7px;font-size:13px}.status{margin-top:14px;color:#b8c5e1;min-height:24px;overflow-wrap:anywhere}.preview{margin-top:16px}.preview video{width:100%;max-height:540px;background:#050711;border-radius:12px}.preview[hidden]{display:none}.preview a,a.back{color:#c5b5ff}.foot{padding:24px 0;text-align:center;color:#7d8bad;font-size:12px}a.back{text-decoration:none;font-size:13px}@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:15px}.panel{padding:16px}}
 </style></head><body><main class="wrap">
-<header class="top"><div class="brand">✦ NOVA <span style="color:#a997ff">AI VIDEO</span></div><a class="back" href="./">← Back to Video Studio</a><span class="tag">AI MODELS · OPTIONAL TOKEN</span></header>
-<section class="hero"><h1>Generate real AI <span>video clips.</span></h1><p>Use supported Hugging Face Inference Providers for text-to-video, image-to-video, or image-plus-prompt video generation. This supplements NOVA's free browser motion-graphics editor and local Windows model runner.</p></section>
-<div class="warn"><b>Free does not mean unlimited.</b> Hugging Face lists a small monthly free inference credit (currently US$0.10 for free users, subject to change). Video generation can consume credits quickly or be unavailable for a selected model/provider. You need your own Hugging Face token with Inference Providers permission. Never paste a token into public code or share it.</div>
-<section class="grid"><div class="panel"><h2>1 · Connection</h2>
-<div class="field"><label for="token">Hugging Face access token</label><input id="token" type="password" autocomplete="off" placeholder="hf_…"></div>
-<div class="row"><button class="secondary" id="remember">Keep in this tab</button><button class="secondary" id="forget">Clear token</button></div>
-<p class="note">Token is held in this page's memory only; it is not saved to the repository. Requests go from your browser to Hugging Face and the selected provider. For public multi-user production, use a secured backend instead.</p>
-<div class="field"><label for="provider">Inference provider</label><select id="provider"><option value="fal-ai">fal.ai (via Hugging Face)</option><option value="replicate">Replicate (via Hugging Face)</option><option value="wavespeed">WaveSpeed (via Hugging Face)</option><option value="novita">Novita (via Hugging Face)</option><option value="auto">Auto / provider routing</option></select></div>
-<div class="field"><label for="mode">Generation mode</label><select id="mode"><option value="text">Text → Video</option><option value="image">Image → Video</option><option value="imageText">Image + prompt → Video</option></select></div>
-<div class="field"><label for="model">Model ID</label><input id="model" value="Wan-AI/Wan2.2-TI2V-5B" spellcheck="false"></div>
-<p class="note">Model/provider compatibility changes over time. Check <a href="https://huggingface.co/docs/inference-providers/en/tasks/text-to-video" target="_blank" rel="noopener">supported text-to-video models</a> and the <a href="https://huggingface.co/docs/huggingface.js/inference/modules" target="_blank" rel="noopener">JavaScript SDK reference</a>.</p>
-</div>
+<header class="top"><div class="brand">✦ NOVA <span style="color:#a997ff">AI VIDEO</span></div><a class="back" href="./">← Back to Video Studio</a><span class="tag">FREE PUBLIC MODEL · NO TOKEN</span></header>
+<section class="hero"><h1>Generate real AI <span>video clips.</span></h1><p>Generate original clips using a public LTX Video model hosted on Hugging Face Spaces. No account, API token, or provider setup is required. This uses a shared free GPU queue, so availability and wait times can vary.</p></section>
+<div class="warn"><b>No API key or account required.</b> This calls a public Hugging Face Spaces demo directly. Free GPU time is shared, so requests may queue, fail when the service is asleep, or be temporarily rate-limited. Do not upload private or sensitive images.</div>
+<section class="grid"><div class="panel"><h2>1 · Free public engine</h2><p><b>LTX Video · Hugging Face Spaces</b></p><p class="note">Public hosted model endpoint. No login, API token, payment method, or provider connection is required. It runs on shared community GPU capacity.</p><div class="field"><label for="mode">Generation mode</label><select id="mode"><option value="text">Text → Video</option><option value="image">Image → Video</option><option value="imageText">Image + prompt → Video</option></select></div><div class="field"><label for="duration">Clip duration</label><select id="duration"><option value="3">3 seconds · faster test</option><option value="5" selected>5 seconds</option><option value="8">8 seconds · longer queue</option></select></div><div class="field"><label for="aspect">Aspect ratio</label><select id="aspect"><option value="landscape" selected>Landscape · 704 × 512</option><option value="portrait">Portrait · 512 × 704</option><option value="square">Square · 512 × 512</option></select></div><p class="note">Powered by the <a href="https://huggingface.co/spaces/Lightricks/ltx-video-distilled" target="_blank" rel="noopener">public LTX Video demo</a>. If its owner pauses or changes the Space, generation may stop working until a compatible public endpoint is selected.</p></div>
 <div class="panel"><h2>2 · Create a clip</h2>
 <div class="field"><label for="prompt">Prompt / motion description</label><textarea id="prompt" maxlength="1500">A cinematic drone shot slowly approaching a futuristic city at blue hour, realistic lighting, smooth camera motion</textarea></div>
 <div class="field" id="imageField" hidden><label for="image">Starting image (JPG, PNG, or WebP)</label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><div id="imagePreview" class="note"></div></div>
@@ -23,37 +15,55 @@
 <div id="status" class="status" role="status">Ready. Add your token and choose a mode.</div>
 <div class="preview" id="preview" hidden><h2>Generated clip</h2><video id="video" controls playsinline></video><p><a id="download" download="nova-ai-video.mp4">Download generated video</a></p><p class="note">Provider output format may vary. If the browser cannot play it, download and open it in a compatible player.</p></div>
 </div></section>
-<section class="panel" style="margin-top:16px"><h2>Other no-cost / open-model routes</h2><p class="note">For zero hosted inference charges, use the existing <a href="local-engine/">local CogVideoX engine setup</a> on a compatible NVIDIA GPU. Model weights are a large download and local generation needs capable hardware. Hosted free quotas are provider-controlled; unlimited free generations are not promised.</p><p><a href="https://huggingface.co/docs/inference-providers/pricing" target="_blank" rel="noopener">Hugging Face pricing and free credits ↗</a> · <a href="https://fal.ai/explore/image-to-video-apis" target="_blank" rel="noopener">fal image-to-video models and pricing ↗</a></p></section>
-<footer class="foot">NOVA Video Studio · Experimental API integration · Check model licenses and provider terms before commercial use.</footer>
+<section class="panel" style="margin-top:16px"><h2>Free public API notes</h2><p class="note">This uses a public, unauthenticated Gradio queue endpoint—not paid Inference Providers. Shared capacity means wait times, limits, or outages are possible. For offline generation, use the <a href="local-engine/">local AI engine</a> on compatible hardware.</p><p><a href="https://huggingface.co/docs/hub/en/spaces-api-endpoints" target="_blank" rel="noopener">How public Spaces APIs work ↗</a> · <a href="https://huggingface.co/spaces/Lightricks/ltx-video-distilled" target="_blank" rel="noopener">Open the model Space ↗</a></p></section>
+<footer class="foot">NOVA Video Studio · Free public AI API · Shared service, availability not guaranteed.</footer>
 </main>
-<script type="module">
-import { InferenceClient } from "https://esm.sh/@huggingface/inference@4.7.1";
-const $=id=>document.getElementById(id);let aborter=null,videoUrl=null,rememberedToken='';
+<script>
+const $=id=>document.getElementById(id);let videoUrl=null,controller=null;
+const API='https://lightricks-ltx-video-distilled.hf.space';
 function setStatus(s){$('status').textContent=s}
-function syncMode(){const m=$('mode').value;$('imageField').hidden=m==='text';$('model').value=m==='text'?'Wan-AI/Wan2.2-TI2V-5B':m==='image'?'Wan-AI/Wan2.1-I2V-14B-720P':'Lightricks/LTX-Video';$('prompt').placeholder=m==='image'?'Optional prompt if supported by the selected model':'Describe the desired motion and scene'}
+function syncMode(){const m=$('mode').value;$('imageField').hidden=m==='text';$('prompt').placeholder=m==='image'?'Describe the motion you want to see':'Describe the scene and motion'}
 $('mode').addEventListener('change',syncMode);
-$('remember').addEventListener('click',()=>{rememberedToken=$('token').value.trim();setStatus(rememberedToken?'Token held in page memory for this tab.':'Paste a token first.')});
-$('forget').addEventListener('click',()=>{$('token').value='';rememberedToken='';setStatus('Token cleared from this page.')});
 $('image').addEventListener('change',()=>{const f=$('image').files[0];$('imagePreview').textContent=f?f.name+' · '+(f.size/1024/1024).toFixed(2)+' MB':''});
-$('cancel').addEventListener('click',()=>{if(aborter)aborter.abort();setStatus('Cancellation requested. The provider may already have started processing.');$('cancel').disabled=true});
+$('cancel').addEventListener('click',()=>{if(controller)controller.abort();setStatus('Cancelled waiting in this browser. A submitted job may continue on the shared service.');$('cancel').disabled=true});
+async function submitJob(apiName,data){
+ const r=await fetch(API+'/gradio_api/call/'+apiName,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data}),signal:controller.signal});
+ if(!r.ok)throw new Error('Public model queue rejected the request (HTTP '+r.status+'). It may be busy or temporarily unavailable.');
+ const j=await r.json();if(!j.event_id)throw new Error('The public model did not return a queue ID.');
+ setStatus('Job queued. Waiting for shared GPU capacity; this may take 1–5 minutes…');
+ const rr=await fetch(API+'/gradio_api/call/'+apiName+'/'+encodeURIComponent(j.event_id),{signal:controller.signal});
+ if(!rr.ok)throw new Error('Lost connection while waiting (HTTP '+rr.status+'). Try again later.');
+ const raw=await rr.text();let completed=null;
+ for(const block of raw.split(/\n\n/)){const ev=(block.match(/^event:\s*(\S+)/m)||[])[1],dm=(block.match(/^data:\s*(.+)$/m)||[])[1];if(ev==='error')throw new Error('The model reported an error: '+(dm||'unknown error'));if(ev==='complete'&&dm)completed=JSON.parse(dm)}
+ if(!completed)throw new Error('The model timed out or closed before returning a video.');
+ return completed;
+}
+async function uploadImage(file){
+ const fd=new FormData();fd.append('files',file);
+ const r=await fetch(API+'/gradio_api/upload',{method:'POST',body:fd,signal:controller.signal});
+ if(!r.ok)throw new Error('Could not upload the starting image to the public model (HTTP '+r.status+').');
+ const paths=await r.json();if(!Array.isArray(paths)||!paths[0])throw new Error('The public model did not accept the image upload.');
+ return paths[0];
+}
 $('generate').addEventListener('click',async()=>{
- const token=$('token').value.trim()||rememberedToken,mode=$('mode').value,model=$('model').value.trim(),prompt=$('prompt').value.trim(),provider=$('provider').value,image=$('image').files[0];
- if(!token){setStatus('Add a Hugging Face access token with Inference Providers permission.');return}
- if(!model){setStatus('Enter a model ID.');return}
- if(mode!=='image'&&!prompt){setStatus('Enter a prompt.');return}
- if(mode!=='text'&&!image){setStatus('Choose a starting image for image-to-video mode.');return}
- if(image&&image.size>12*1024*1024){setStatus('Please use an image under 12 MB to reduce upload failures.');return}
- aborter=new AbortController();$('generate').disabled=true;$('cancel').disabled=false;$('preview').hidden=true;setStatus('Connecting to provider. Video generation may take several minutes…');
+ const mode=$('mode').value,prompt=$('prompt').value.trim(),file=$('image').files[0],duration=Number($('duration').value),aspect=$('aspect').value;
+ if(!prompt){setStatus('Enter a prompt describing the video.');return}
+ if(mode!=='text'&&!file){setStatus('Choose a starting picture first.');return}
+ if(file&&file.size>10*1024*1024){setStatus('Please use an image under 10 MB.');return}
+ controller=new AbortController();$('generate').disabled=true;$('cancel').disabled=false;$('preview').hidden=true;setStatus('Connecting to the free public model…');
  try{
-  const client=new InferenceClient(token);const common={model,provider,signal:aborter.signal};let blob;
-  if(mode==='text')blob=await client.textToVideo({...common,inputs:prompt});
-  else if(mode==='image')blob=await client.imageToVideo({...common,inputs:image});
-  else blob=await client.imageTextToVideo({...common,inputs:{image:image,prompt:prompt}});
-  if(!(blob instanceof Blob)||blob.size===0)throw new Error('Provider returned an empty result. Try another model/provider or check task requirements.');
-  if(videoUrl)URL.revokeObjectURL(videoUrl);videoUrl=URL.createObjectURL(blob);$('video').src=videoUrl;$('download').href=videoUrl;
-  const ext=blob.type.includes('webm')?'webm':blob.type.includes('mp4')?'mp4':'mp4';$('download').download='nova-ai-video.'+ext;$('preview').hidden=false;setStatus('Generation complete · '+(blob.size/1024/1024).toFixed(2)+' MB · '+(blob.type||'video file'));
- }catch(e){setStatus(e.name==='AbortError'?'Generation was cancelled.':'Generation failed: '+(e.message||e)+'. Check token permissions, provider/model support, free-credit balance, and model availability.')}
- finally{$('generate').disabled=false;$('cancel').disabled=true;aborter=null}
+  let imagePath='';
+  if(mode!=='text'){setStatus('Uploading starting image to the public model…');imagePath=await uploadImage(file)}
+  const [width,height]=aspect==='portrait'?[512,704]:aspect==='square'?[512,512]:[704,512];
+  const data=[prompt,$('negative').value.trim()||'worst quality, blurry, distorted, watermark',imagePath,'',height,width,mode==='text'?'text-to-video':'image-to-video',duration,9,Math.floor(Math.random()*4294967295),true,1,true];
+  const result=await submitJob('text_to_video',data);
+  const videoField=Array.isArray(result)?result[0]:result?.video||result;
+  const url=videoField?.video?.url||videoField?.url||videoField?.path;
+  if(!url)throw new Error('The public model completed but returned no recognizable video URL.');
+  const finalUrl=url.startsWith('http')?url:API+url;
+  $('video').src=finalUrl;$('download').href=finalUrl;$('download').download='nova-ai-video.mp4';$('preview').hidden=false;setStatus('Video generated successfully. Use Download generated video to save your clip.');
+ }catch(e){setStatus(e.name==='AbortError'?'Request cancelled.':(e.message||String(e))+' Check that the public Space is online, then retry.')}
+ finally{$('generate').disabled=false;$('cancel').disabled=true;controller=null}
 });
 syncMode();
 </script></body></html>
