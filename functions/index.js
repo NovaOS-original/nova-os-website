@@ -102,9 +102,9 @@ exports.chatWithNova = onCall({ region: REGION, secrets: [GEMINI_API_KEY], timeo
     metadata: { tool: "chatbot" }
   });
 
-  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(GEMINI_API_KEY.value()), {
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY.value() },
     body: JSON.stringify({
       system_instruction: { parts: [{ text: "You are NOVA Assistant, a helpful guide for the Nova OS community and its video studio. Be honest about limitations, avoid claiming you performed actions you did not perform, and do not request passwords, API keys, or sensitive personal data." }] },
       contents: [{ role: "user", parts: [{ text: message }] }],
