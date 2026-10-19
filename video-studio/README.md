@@ -1,11 +1,11 @@
 # NOVA Video Studio
 
-A browser-based video creation project hosted as part of the Nova OS website. It now has three routes: browser-native motion graphics with no API, optional hosted AI generation through Hugging Face Inference Providers, and an optional local open-source model runner.
+A browser-based video creation project hosted as part of the Nova OS website. It has three routes: browser-native motion graphics, free public hosted AI video generation without a user API token, and an optional local open-source model runner.
 
 ## Open it
 
 - Main studio: `index.html`
-- Hosted AI generator: `ai-generator.html`
+- Free AI generator: `ai-generator.html`
 - Local model setup: `local-engine/README.md`
 
 ## Browser-native editor
@@ -16,19 +16,20 @@ A browser-based video creation project hosted as part of the Nova OS website. It
 - Poster PNG and browser-native WebM export
 - Works without account connections, API keys, or hosted AI inference
 
-This mode creates procedural motion graphics and animated title scenes. It is not a photorealistic text-to-video model and does not claim to outperform Kling or similar services.
+This mode creates procedural motion graphics and animated title scenes. It is not a photorealistic text-to-video model.
 
-## Optional hosted AI generation
+## Free hosted AI generation (no user token)
 
-The AI generator integrates the Hugging Face JavaScript Inference Client for text-to-video, image-to-video, and image-plus-prompt-to-video task methods. It supports selecting an inference provider and model ID; model/provider compatibility changes over time.
+The AI generator calls a public LTX Video Gradio API hosted on Hugging Face Spaces. It supports text-to-video and image-to-video from the browser, without asking the user to register, paste an API token, connect a provider, or enter payment details.
 
-1. Create a Hugging Face user access token with Inference Providers permission.
-2. Open `ai-generator.html`, paste the token, choose a mode, and select a compatible model/provider.
-3. Upload a starting image for image-to-video modes, then generate and download the result.
+1. Open `ai-generator.html`.
+2. Choose Text → Video or Image → Video.
+3. Describe the scene/motion, optionally upload a starting picture, and press Generate.
+4. Wait for the shared public GPU queue, then preview or download the MP4.
 
-**Free tier limitation:** Hugging Face's published pricing currently lists US$0.10/month in inference-provider credits for free users, subject to change. Video inference can use credits quickly, and a provider/model may be unavailable. Do not describe this as unlimited free video generation. Read the [current pricing page](https://huggingface.co/docs/inference-providers/pricing) before use.
+**Important limitations:** this uses a third-party community demo and shared free compute. It may queue slowly, be rate-limited, sleep, change its API, or go offline. Free public access is not a guarantee of unlimited or uninterrupted generations. Images are sent to the public service for processing; do not upload private or sensitive material. The site does not store an API token because none is required.
 
-**Token safety:** the page does not save the token to local storage or the repository; it is kept in page memory while open and sent directly from the browser to Hugging Face. This is appropriate for personal testing, not a public multi-user production service. Never hard-code a personal token in source code. A production multi-user deployment needs a secure server-side proxy and abuse/cost controls.
+The integration is based on the public [Lightricks LTX Video Space](https://huggingface.co/spaces/Lightricks/ltx-video-distilled) and Hugging Face's [Spaces API documentation](https://huggingface.co/docs/hub/en/spaces-api-endpoints). If that Space changes its endpoint schema, the integration may need updating.
 
 ## Optional local AI generation
 
@@ -37,5 +38,5 @@ See `local-engine/README.md` for the CogVideoX-2B local runner. It downloads pub
 ## Compatibility and limitations
 
 - WebM export depends on browser MediaRecorder support; MP4 is not guaranteed by the browser-native editor.
-- Hosted output formats, supported options, latency, free credits, and model availability depend on the provider and may change.
+- Hosted output formats, latency, shared free quota, and model availability depend on the third-party demo and may change.
 - Model licenses and provider terms apply. Review them before commercial use.
