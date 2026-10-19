@@ -1,0 +1,36 @@
+name: NOVA Video Studio checks
+
+on:
+  push:
+    paths:
+      - "video-studio/**"
+      - ".github/workflows/video-studio-check.yml"
+  pull_request:
+    paths:
+      - "video-studio/**"
+      - ".github/workflows/video-studio-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check Python syntax
+        run: python -m py_compile video-studio/local-engine/generate.py
+      - name: Check required project files
+        run: |
+          test -s video-studio/index.html
+          test -s video-studio/README.md
+          test -s video-studio/local-engine/index.html
+          test -s video-studio/local-engine/README.md
+          test -s video-studio/local-engine/requirements.txt
+          test -s video-studio/local-engine/setup_windows.bat
