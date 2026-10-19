@@ -40,6 +40,7 @@ function log(type, metadata = {}) {
   if (!ready || !logCall) return;
   logCall({ type, metadata }).catch(() => {});
 }
+window.novaLogActivity = log;
 function openTerms({ signedIn = false, error = "" } = {}) {
   document.getElementById("nova-cloud-overlay")?.remove();
   const overlay = $("div", { id: "nova-cloud-overlay", class: "nova-cloud-overlay" });
