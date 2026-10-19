@@ -55,7 +55,8 @@ $('generate').addEventListener('click',async()=>{
   let imagePath='';
   if(mode!=='text'){setStatus('Uploading starting image to the public model…');imagePath=await uploadImage(file)}
   const [width,height]=aspect==='portrait'?[512,704]:aspect==='square'?[512,512]:[704,512];
-  const data=[prompt,$('negative').value.trim()||'worst quality, blurry, distorted, watermark',imagePath,'',height,width,mode==='text'?'text-to-video':'image-to-video',duration,9,Math.floor(Math.random()*4294967295),true,1,true];\n  window.novaLogActivity?.('video_generation_started',{tool:'ai-video',mode});
+  const data=[prompt,$('negative').value.trim()||'worst quality, blurry, distorted, watermark',imagePath,'',height,width,mode==='text'?'text-to-video':'image-to-video',duration,9,Math.floor(Math.random()*4294967295),true,1,true];
+  window.novaLogActivity?.('video_generation_started',{tool:'ai-video',mode});
   const result=await submitJob('text_to_video',data);
   const videoField=Array.isArray(result)?result[0]:result?.video||result;
   const url=videoField?.video?.url||videoField?.url||videoField?.path;
