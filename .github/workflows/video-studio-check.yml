@@ -54,7 +54,7 @@ jobs:
           import re
           from pathlib import Path
           html = Path("video-studio/ai-generator.html").read_text()
-          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S)
+          scripts = [s for s in re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", html, re.S) if s.strip()]
           if not scripts:
               raise SystemExit("No inline scripts found")
           Path("/tmp/nova-ai-generator.js").write_text(scripts[-1])
