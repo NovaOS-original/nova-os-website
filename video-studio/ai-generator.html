@@ -12,7 +12,7 @@
 <div class="field" id="imageField" hidden><label for="image">Starting image (JPG, PNG, or WebP)</label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><div id="imagePreview" class="note"></div></div>
 <div class="field"><label for="negative">Negative prompt (optional)</label><input id="negative" placeholder="blurry, distorted, flicker, text artifacts"></div>
 <div class="row"><button id="generate" class="primary">Generate AI video ↗</button><button id="cancel" class="secondary" disabled>Cancel</button></div>
-<div id="status" class="status" role="status">Ready. Add your token and choose a mode.</div>
+<div id="status" class="status" role="status">Ready. No API token needed. Choose a mode and create a clip.</div>
 <div class="preview" id="preview" hidden><h2>Generated clip</h2><video id="video" controls playsinline></video><p><a id="download" download="nova-ai-video.mp4">Download generated video</a></p><p class="note">Provider output format may vary. If the browser cannot play it, download and open it in a compatible player.</p></div>
 </div></section>
 <section class="panel" style="margin-top:16px"><h2>Free public API notes</h2><p class="note">This uses a public, unauthenticated Gradio queue endpoint—not paid Inference Providers. Shared capacity means wait times, limits, or outages are possible. For offline generation, use the <a href="local-engine/">local AI engine</a> on compatible hardware.</p><p><a href="https://huggingface.co/docs/hub/en/spaces-api-endpoints" target="_blank" rel="noopener">How public Spaces APIs work ↗</a> · <a href="https://huggingface.co/spaces/Lightricks/ltx-video-distilled" target="_blank" rel="noopener">Open the model Space ↗</a></p></section>
@@ -55,14 +55,14 @@ $('generate').addEventListener('click',async()=>{
   let imagePath='';
   if(mode!=='text'){setStatus('Uploading starting image to the public model…');imagePath=await uploadImage(file)}
   const [width,height]=aspect==='portrait'?[512,704]:aspect==='square'?[512,512]:[704,512];
-  const data=[prompt,$('negative').value.trim()||'worst quality, blurry, distorted, watermark',imagePath,'',height,width,mode==='text'?'text-to-video':'image-to-video',duration,9,Math.floor(Math.random()*4294967295),true,1,true];
+  const data=[prompt,$('negative').value.trim()||'worst quality, blurry, distorted, watermark',imagePath,'',height,width,mode==='text'?'text-to-video':'image-to-video',duration,9,Math.floor(Math.random()*4294967295),true,1,true];\n  window.novaLogActivity?.('video_generation_started',{tool:'ai-video',mode});
   const result=await submitJob('text_to_video',data);
   const videoField=Array.isArray(result)?result[0]:result?.video||result;
   const url=videoField?.video?.url||videoField?.url||videoField?.path;
   if(!url)throw new Error('The public model completed but returned no recognizable video URL.');
   const finalUrl=url.startsWith('http')?url:API+url;
-  $('video').src=finalUrl;$('download').href=finalUrl;$('download').download='nova-ai-video.mp4';$('preview').hidden=false;setStatus('Video generated successfully. Use Download generated video to save your clip.');
- }catch(e){setStatus(e.name==='AbortError'?'Request cancelled.':(e.message||String(e))+' Check that the public Space is online, then retry.')}
+  $('video').src=finalUrl;$('download').href=finalUrl;$('download').download='nova-ai-video.mp4';$('preview').hidden=false;setStatus('Video generated successfully. Use Download generated video to save your clip.');window.novaLogActivity?.('video_generation_completed',{tool:'ai-video',mode});
+ }catch(e){setStatus(e.name==='AbortError'?'Request cancelled.':(e.message||String(e))+' Check that the public Space is online, then retry.');window.novaLogActivity?.('video_generation_failed',{tool:'ai-video',mode});}
  finally{$('generate').disabled=false;$('cancel').disabled=true;controller=null}
 });
 syncMode();
