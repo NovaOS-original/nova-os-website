@@ -10,16 +10,16 @@ Responsive, animated landing page for Nova OS.
 - `index.html` — page structure/content
 - `style.css` — responsive styling and animations
 - `script.js` — interactions, scroll reveals, counters, parallax, navigation and motion
+- `nova-cloud.js` — Supabase Google sign-in, consent gate, activity logger and chatbot client
 
-Open `index.html` in a modern browser to preview locally.
+## Supabase cloud features (setup required)
 
-## Firebase cloud features (setup required)
+The repository includes a Supabase integration scaffold for Google OAuth, per-user profiles, terms acceptance, privacy-limited activity metadata, and a Gemini-backed NOVA chatbot.
 
-The repository includes a Firebase integration scaffold for Google sign-in, per-user account profiles, consent to the Terms & Privacy Notice, privacy-limited activity metadata, and a Gemini-backed NOVA chatbot.
-
-- [Firebase setup and deployment guide](FIREBASE_SETUP.md)
+- [Supabase setup and deployment guide](SUPABASE_SETUP.md)
 - [Terms & Privacy Notice](TERMS.md)
-- [Cloud Functions API](functions/index.js)
-- [Firestore security rules](firestore.rules)
+- [Supabase database schema and RLS policies](supabase/migrations/202610200001_nova_cloud.sql)
+- [Authenticated Edge Function API](supabase/functions/nova-api/index.ts)
+- [Public client config placeholder](supabase-config.js)
 
-These features remain inactive until a Firebase project is configured in firebase-config.js, Google sign-in is enabled, Firestore rules and Cloud Functions are deployed, and the Gemini API key is stored as a server-side secret. Do not commit secrets. Activity logs are metadata-only and intended for 90-day expiration once Firestore TTL is enabled.
+These features remain inactive until the Supabase project URL and publishable key are configured, Google OAuth is enabled, the SQL schema is applied, and the Edge Function is deployed. Store GEMINI_API_KEY only as a server-side Edge Function secret. Never commit Supabase secret/service-role keys. Activity logs contain selected metadata, not full chat messages or prompts.
