@@ -108,7 +108,7 @@ function setupAccountAndChat(){
    const result=await api({action:"chat",message,history:conversation.slice(-12,-1)});
    pending.textContent=result.answer||"I couldn't generate a reply. Please try again.";pending.classList.remove("nova-chat-pending");
    conversation.push({role:"assistant",content:pending.textContent});
-  }catch(e){pending.textContent=e?.message||"Chat is unavailable. Please try again later.";pending.classList.remove("nova-chat-pending");}
+  }catch(e){pending.textContent=e?.message||"Chat is unavailable. Please try again later.";pending.classList.remove("nova-chat-pending");conversation.push({role:"assistant",content:pending.textContent});}
   finally{send.disabled=false;send.textContent="Send ↗";input.disabled=false;input.focus();scrollDown();}
  };
  form.addEventListener("submit",async e=>{e.preventDefault();await submitMessage();});
