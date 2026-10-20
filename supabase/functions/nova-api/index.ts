@@ -70,10 +70,20 @@ Deno.serve(async (req: Request) => {
       const geminiKey = Deno.env.get("GEMINI_API_KEY");
       if (!geminiKey) return reply({ error: "Chatbot is not configured yet." }, 503);
       await admin.from("nova_activity_logs").insert({ user_id: user.id, event_type: "chat_request", metadata: { tool: "chatbot" }, expires_at: new Date(Date.now() + 90*86400000).toISOString() });
+      const rawHistory = Array.isArray(body?.history) ? body.history : [];
+      const history = rawHistory.slice(-10).flatMap((item: { role?: unknown; content?: unknown }) => {
+        const role = item?.role === "assistant" ? "model" : item?.role === "user" ? "user" : null;
+        const content = typeof item?.content === "string" ? item.content.trim().slice(0, 1200) : "";
+        return role && content ? [{ role, parts: [{ text: content }] }] : [];
+      });
       const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey },
-        body: JSON.stringify({ systemInstruction: { parts: [{ text: "You are NOVA Assistant for the NOVA OS open-source project and website. Be helpful, clear, honest about limitations, and do not claim actions were performed unless verified." }] }, contents: [{ role: "user", parts: [{ text: message }] }], generationConfig: { maxOutputTokens: 800, temperature: 0.7 } })
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: "You are NOVA Assistant, the helpful guide for the NOVA OS open-source project, NOVA website, and Video Studio prototype. Answer in clear, practical steps and adapt to follow-up questions using the conversation context. Be honest about what is actually implemented: the public site is a static website; Video Studio currently focuses on browser-based animated scenes, titles, motion graphics and WebM export, not guaranteed photorealistic AI video generation. Never claim to have edited a repository, deployed code, accessed a user's account, or completed an action unless a tool result confirms it. Do not ask for passwords, OAuth secrets, Supabase service-role keys, or API keys. When discussing integrations, keep secret keys on the server and recommend testing before production." }] },
+          contents: [...history, { role: "user", parts: [{ text: message }] }],
+          generationConfig: { maxOutputTokens: 1000, temperature: 0.65 }
+        })
       });
       if (!aiResponse.ok) return reply({ error: "AI provider is temporarily unavailable." }, 502);
       const aiJson = await aiResponse.json();
