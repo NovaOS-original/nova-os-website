@@ -20,6 +20,7 @@ function injectStyles() {
  .nova-cloud-account{position:fixed;z-index:9990;right:14px;top:14px;display:flex;gap:8px;align-items:center;background:#10182beF;border:1px solid #34405c;border-radius:999px;padding:7px 11px;color:#f4f6ff;font:12px system-ui,sans-serif;max-width:calc(100vw - 28px)}.nova-cloud-account img{width:26px;height:26px;border-radius:50%}.nova-cloud-account button{border:1px solid #4a5573;border-radius:99px;background:#202943;color:#f4f6ff;padding:5px 8px}
  .nova-chat-launch{position:fixed;z-index:9991;right:16px;bottom:16px;border:0;border-radius:99px;padding:14px 18px;background:linear-gradient(100deg,#9a7bff,#66e8f2);color:#09101c;font-weight:850;box-shadow:0 8px 30px #0007}.nova-chat-panel{position:fixed;z-index:9992;right:14px;bottom:78px;width:min(370px,calc(100vw - 28px));height:min(540px,70vh);background:#10182b;border:1px solid #394565;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;color:#f4f6ff;font:14px/1.45 system-ui,sans-serif;box-shadow:0 20px 70px #0009}
  .nova-chat-head{padding:13px 15px;border-bottom:1px solid #34405c;display:flex;justify-content:space-between;align-items:center}.nova-chat-head button{background:none;border:0;color:#fff;font-size:22px}.nova-chat-messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}.nova-chat-msg{padding:10px 12px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:94%}.nova-chat-user{align-self:flex-end;background:#2c2850}.nova-chat-bot{align-self:flex-start;background:#1a2740}.nova-chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid #34405c}.nova-chat-form textarea{flex:1;min-width:0;resize:none;height:58px;background:#080f20;border:1px solid #3a4664;border-radius:10px;padding:8px;color:#fff;font:inherit}.nova-chat-form button{border:0;border-radius:10px;padding:8px 12px;background:#9d8bff;color:#0a1020;font-weight:800}
+ .nova-chat-subtitle{font-size:11px;color:#a7b4d1;margin-top:2px}.nova-chat-welcome{margin:auto 0;padding:8px 2px}.nova-chat-welcome>strong{font-size:17px}.nova-chat-welcome p{color:#a7b4d1;font-size:12px}.nova-chat-quick{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.nova-chat-chip{border:1px solid #3b486b;border-radius:99px;background:#151f37;color:#dfe7ff;padding:7px 10px;font-size:11px;cursor:pointer}.nova-chat-field{flex:1;min-width:0}.nova-chat-form{align-items:flex-end}.nova-chat-form textarea{width:100%;display:block}.nova-chat-meta{display:flex;justify-content:space-between;gap:6px;color:#8390ad;font-size:9px;padding:4px 3px 0}.nova-chat-send{align-self:stretch;min-width:68px}.nova-chat-send:disabled{opacity:.55}.nova-chat-pending{opacity:.75}.nova-chat-msg{line-height:1.5;white-space:pre-wrap}
  .nova-cloud-setup{position:fixed;z-index:9998;bottom:14px;left:14px;max-width:min(540px,calc(100vw - 28px));background:#282115;border:1px solid #7d6230;color:#f6e4b8;padding:12px 14px;border-radius:12px;font:12px/1.45 system-ui,sans-serif}.nova-cloud-setup a{color:#fff}`));
 }
 function showSetupNotice(){document.body.appendChild($("div",{class:"nova-cloud-setup"},'NOVA cloud services need Supabase configuration. Google login, account storage, activity logging and chatbot are not active yet. <a href="https://github.com/NovaOS-original/nova-os-website/blob/main/SUPABASE_SETUP.md">Setup guide</a>'));}
@@ -75,11 +76,45 @@ function setupAccountAndChat(){
  const out=$("button",{type:"button"},"Sign out");out.addEventListener("click",async()=>{log("logout",{tool:pageTool()});await supabase.auth.signOut();});account.appendChild(out);document.body.appendChild(account);
  const launch=$("button",{id:"nova-chat-launch",class:"nova-chat-launch",type:"button"},"✦ Chat with NOVA");
  const panel=$("section",{id:"nova-chat-panel",class:"nova-chat-panel",hidden:"hidden","aria-label":"NOVA chatbot"});
- const head=$("div",{class:"nova-chat-head"},"<strong>NOVA Assistant</strong>");const close=$("button",{type:"button","aria-label":"Close chat"},"×");close.addEventListener("click",()=>panel.hidden=true);head.appendChild(close);
- const messages=$("div",{class:"nova-chat-messages",id:"nova-chat-messages","aria-live":"polite"});messages.appendChild($("div",{class:"nova-chat-msg nova-chat-bot"},"Hi! I'm NOVA Assistant. Ask me about Nova OS, the website, or Video Studio."));
- const form=$("form",{class:"nova-chat-form"});const input=$("textarea",{maxlength:"2000",placeholder:"Ask NOVA…","aria-label":"Message"});const send=$("button",{type:"submit"},"Send");form.append(input,send);panel.append(head,messages,form);
- launch.addEventListener("click",()=>{panel.hidden=!panel.hidden;input.focus();});
- form.addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message||send.disabled)return;messages.appendChild($("div",{class:"nova-chat-msg nova-chat-user"},escapeHtml(message)));input.value="";send.disabled=true;send.textContent="…";const pending=$("div",{class:"nova-chat-msg nova-chat-bot"},"Thinking…");messages.appendChild(pending);messages.scrollTop=messages.scrollHeight;try{const result=await api({action:"chat",message});pending.textContent=result.answer||"I couldn't generate a reply. Please try again.";}catch(e){pending.textContent=e?.message||"Chat is unavailable. Please try again later.";}finally{send.disabled=false;send.textContent="Send";messages.scrollTop=messages.scrollHeight;}});
+ const head=$("div",{class:"nova-chat-head"},"<div><strong>NOVA Assistant</strong><div class=\"nova-chat-subtitle\">Your NOVA OS & creative tech helper</div></div>");
+ const close=$("button",{type:"button","aria-label":"Close chat"},"×");close.addEventListener("click",()=>{panel.hidden=true;launch.focus();});head.appendChild(close);
+ const messages=$("div",{class:"nova-chat-messages",id:"nova-chat-messages","aria-live":"polite","aria-relevant":"additions text"});
+ const welcome=$("div",{class:"nova-chat-welcome"});
+ welcome.appendChild($("strong",{},"What can I help you build?"));
+ welcome.appendChild($("p",{},"Ask about NOVA OS, website features, coding, or the Video Studio prototype."));
+ const quick=$("div",{class:"nova-chat-quick"});
+ [
+  ["NOVA OS","Explain the current NOVA OS project and next steps."],
+  ["Video Studio","How can I create and export a video in NOVA Video Studio?"],
+  ["Build help","Help me debug a coding or GitHub Actions error."]
+ ].forEach(([label,prompt])=>{const b=$("button",{type:"button",class:"nova-chat-chip"},label);b.addEventListener("click",()=>{input.value=prompt;form.requestSubmit();});quick.appendChild(b);});
+ welcome.appendChild(quick);messages.appendChild(welcome);
+ const form=$("form",{class:"nova-chat-form"});
+ const field=$("div",{class:"nova-chat-field"});
+ const input=$("textarea",{maxlength:"2000",placeholder:"Message NOVA…","aria-label":"Message NOVA","rows":"2"});
+ const meta=$("div",{class:"nova-chat-meta"});const count=$("span",{},"0 / 2000");const hint=$("span",{},"Enter to send · Shift+Enter for a new line");meta.append(count,hint);
+ field.append(input,meta);
+ const send=$("button",{type:"submit",class:"nova-chat-send"},"Send ↗");form.append(field,send);panel.append(head,messages,form);
+ const scrollDown=()=>{messages.scrollTop=messages.scrollHeight;};
+ const addMessage=(text,kind)=>{const node=$("div",{class:"nova-chat-msg "+(kind==="user"?"nova-chat-user":"nova-chat-bot")});node.textContent=text;messages.appendChild(node);scrollDown();return node;};
+ const conversation=[];
+ const submitMessage=async()=>{
+  const message=input.value.trim();if(!message||send.disabled)return;
+  input.value="";count.textContent="0 / 2000";welcome.remove();
+  addMessage(message,"user");conversation.push({role:"user",content:message});
+  send.disabled=true;send.textContent="Thinking…";input.disabled=true;
+  const pending=addMessage("NOVA is thinking…","bot");pending.classList.add("nova-chat-pending");
+  try{
+   const result=await api({action:"chat",message,history:conversation.slice(-12,-1)});
+   pending.textContent=result.answer||"I couldn't generate a reply. Please try again.";pending.classList.remove("nova-chat-pending");
+   conversation.push({role:"assistant",content:pending.textContent});
+  }catch(e){pending.textContent=e?.message||"Chat is unavailable. Please try again later.";pending.classList.remove("nova-chat-pending");}
+  finally{send.disabled=false;send.textContent="Send ↗";input.disabled=false;input.focus();scrollDown();}
+ };
+ form.addEventListener("submit",async e=>{e.preventDefault();await submitMessage();});
+ input.addEventListener("input",()=>{count.textContent=input.value.length+" / 2000";});
+ input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();form.requestSubmit();}});
+ launch.addEventListener("click",()=>{panel.hidden=!panel.hidden;if(!panel.hidden)input.focus();});
  document.body.append(launch,panel);
 }
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
