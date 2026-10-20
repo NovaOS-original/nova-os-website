@@ -59,8 +59,7 @@ function openTerms({signedIn=false,error=""}={}){
     const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href,queryParams:{access_type:"offline",prompt:"select_account"}}});
     if(error)throw error;
    }else{
-    const {error}=await supabase.from("nova_profiles").upsert({user_id:currentUser.id,display_name:currentUser.user_metadata?.full_name||currentUser.user_metadata?.name||"",email:currentUser.email||"",avatar_url:currentUser.user_metadata?.avatar_url||currentUser.user_metadata?.picture||"",terms_version:TERMS_VERSION,terms_accepted_at:new Date().toISOString(),last_seen_at:new Date().toISOString()},{onConflict:"user_id"});
-    if(error)throw error;
+    await api({action:"accept_terms",termsVersion:TERMS_VERSION,accepted:true});
     busy=false;ready=true;overlay.remove();setupAccountAndChat();log("page_view",{tool:pageTool()});
    }
   }catch(e){busy=false;button.disabled=false;button.textContent=signedIn?"Accept & Continue":"Accept & Continue with Google";errorNode.textContent=e?.message||"Could not complete sign-in. Please try again.";}
