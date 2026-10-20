@@ -5,23 +5,19 @@ on:
     paths:
       - "video-studio/**"
       - "nova-cloud.js"
-      - "firebase-config.js"
-      - "firebase.json"
-      - "firestore.rules"
-      - "functions/**"
+      - "supabase-config.js"
+      - "supabase/**"
+      - "SUPABASE_SETUP.md"
       - "TERMS.md"
-      - "FIREBASE_SETUP.md"
       - ".github/workflows/video-studio-check.yml"
   pull_request:
     paths:
       - "video-studio/**"
       - "nova-cloud.js"
-      - "firebase-config.js"
-      - "firebase.json"
-      - "firestore.rules"
-      - "functions/**"
+      - "supabase-config.js"
+      - "supabase/**"
+      - "SUPABASE_SETUP.md"
       - "TERMS.md"
-      - "FIREBASE_SETUP.md"
       - ".github/workflows/video-studio-check.yml"
   workflow_dispatch:
 
@@ -44,8 +40,8 @@ jobs:
           node-version: "20"
       - name: Check local engine Python syntax
         run: python -m py_compile video-studio/local-engine/generate.py
-      - name: Check backend JavaScript syntax
-        run: node --check functions/index.js
+      - name: Check Supabase Edge Function source
+        run: python -c "from pathlib import Path; s=Path('supabase/functions/nova-api/index.ts').read_text(); assert 'Deno.serve' in s and 'accept_terms' in s and 'GEMINI_API_KEY' in s"
       - name: Check browser module syntax
         run: node --input-type=module --check < nova-cloud.js
       - name: Check AI generator inline script syntax
