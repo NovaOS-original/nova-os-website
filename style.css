@@ -105,3 +105,69 @@ body::before {
   .reveal { opacity: 1; transform: none; }
   #starfield, .pointer-glow { display:none; }
 }
+
+
+/* Project gallery and original vector artwork */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+.project-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #252a40;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(18,21,38,.96), rgba(8,10,19,.98));
+  box-shadow: 0 18px 55px rgba(0,0,0,.16);
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.project-card:hover {
+  border-color: #5b4a9c;
+  transform: translateY(-4px);
+  box-shadow: 0 22px 60px rgba(60,43,140,.18);
+}
+.project-art {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.project-art svg { display: block; width: 100%; height: 100%; }
+.project-art-kernel { background: radial-gradient(ellipse at 50% 100%, #17274b, #080d1c 72%); }
+.project-art-architecture { background: radial-gradient(ellipse at 50% 50%, #29213e, #0c0d1b 75%); }
+.project-art-gold { background: radial-gradient(ellipse at 50% 100%, #3d2c14, #100e0b 72%); }
+.project-art-video { background: radial-gradient(ellipse at 50% 100%, #392043, #0f0d1d 72%); }
+.project-art-chat { background: radial-gradient(ellipse at 50% 100%, #17333f, #0b1020 72%); }
+.project-art-label {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  padding: 5px 9px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 99px;
+  background: rgba(5,8,18,.7);
+  color: #d8ddf4;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  backdrop-filter: blur(8px);
+}
+.project-body { padding: 22px; }
+.project-body h3 { margin: 10px 0; font-size: 21px; }
+.project-body p { color: #a4a9b8; font-size: 13px; line-height: 1.75; }
+.project-status { display: inline-block; color: #b9a8ff; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+.project-body .project-state { margin-top: 15px; color: #a99aff; font-size: 10px; font-weight: 800; letter-spacing: .04em; }
+.project-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
+.project-links .text-btn { align-items: center; gap: 9px; font-size: 11px; padding: 9px 12px; }
+@media (max-width: 760px) {
+  .project-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .project-art { height: 200px; }
+  .project-body { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card { transition: none; }
+  .project-card:hover { transform: none; }
+}
