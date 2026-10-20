@@ -28,6 +28,21 @@ Deno.serve(async (req: Request) => {
   try {
     const body = await req.json();
     const action = String(body?.action ?? "");
+    if (action === "accept_terms") {
+      if (body?.accepted !== true || body?.termsVersion !== TERMS_VERSION) return reply({ error: "Explicit acceptance of the current terms is required." }, 400);
+      const { error } = await admin.from("nova_profiles").upsert({
+        user_id: user.id,
+        display_name: String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").slice(0,160),
+        email: String(user.email ?? "").slice(0,254),
+        avatar_url: String(user.user_metadata?.avatar_url ?? user.user_metadata?.picture ?? "").slice(0,2048),
+        terms_version: TERMS_VERSION,
+        terms_accepted_at: new Date().toISOString(),
+        last_seen_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
+      if (error) throw error;
+      await admin.from("nova_activity_logs").insert({ user_id: user.id, event_type: "login", metadata: { termsVersion: TERMS_VERSION } });
+      return reply({ ok: true, termsVersion: TERMS_VERSION });
+    }
     const { data: profile, error: profileError } = await admin.from("nova_profiles").select("terms_version,terms_accepted_at").eq("user_id", user.id).maybeSingle();
     if (profileError) throw profileError;
     if (!profile || profile.terms_version !== TERMS_VERSION || !profile.terms_accepted_at) return reply({ error: "Please accept the current NOVA terms first." }, 403);
