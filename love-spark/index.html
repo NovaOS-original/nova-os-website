@@ -33,7 +33,7 @@
 </div>
 <div class="panel"><h2>02. Make it personal</h2><p class="sub">Choose a vibe and add the words you want her to read.</p>
 <div class="formrow"><label>Choose your mood</label><div class="themes"><button type="button" class="theme active" data-theme="rose">🌹 Rose romance</button><button type="button" class="theme" data-theme="night">🌙 Midnight magic</button><button type="button" class="theme" data-theme="gold">✨ Golden love</button></div></div>
-<div class="formrow"><label for="message">Your message</label><textarea id="message" maxlength="700" placeholder="There's something I want you to know…"></textarea></div>
+<div class="formrow"><label for="message">Your message <span style="color:var(--gold);font-weight:500">(optional — we can write one for you)</span></label><textarea id="message" maxlength="700" placeholder="Leave this empty and LoveSpark will surprise her with a random funny, confident pickup line…"></textarea><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:9px"><button class="secondary" type="button" id="generatePickup">🎲 Give me a hard pickup line</button><span style="color:var(--muted);font-size:.86rem">Funny, catchy, and a little cheeky.</span></div></div>
 <div class="formrow"><label for="ending">The final line (optional)</label><input id="ending" maxlength="120" placeholder="Will you keep being my favourite person?"></div>
 <button class="primary" id="create">Create her surprise ✨</button>
 <p class="notice">Your photos are processed in your browser. The share link carries a compressed version of the pictures and message; keep it private. Very large photos may need to be resized before a link can be shared.</p>
@@ -100,8 +100,30 @@ $('herPhoto').addEventListener('change',async e=>{if(e.target.files[0])try{herDa
 function b64encode(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64decode(str){str=str.replace(/-/g,'+').replace(/_/g,'/');while(str.length%4)str+='=';const bin=atob(str);const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return new TextDecoder().decode(bytes)}
 function render(data,fromLink=false){setTheme(data.t||'rose');$('resultTitle').textContent='For you, '+(data.n||'my favourite person')+' ♥';$('resultYou').src=data.y;$('resultHer').src=data.h;$('resultMessage').textContent=data.m||'You make ordinary moments feel special. I just wanted to remind you how wonderful you are.';$('resultSignature').textContent=(data.s?'— '+data.s:'With love, always')+(data.e?'\n'+data.e:'');$('result').classList.add('show');$('builder').classList.toggle('hidden',fromLink);$('result').scrollIntoView({behavior:'smooth',block:'start'});celebrate();}
+const pickupLines=[
+"Are you a plot twist? Because I was minding my business… then you showed up and ruined my ability to act normal. 😭❤️",
+"Are you Wi-Fi? Because I’m feeling a connection… and I’m prepared to stand in the corner until the signal gets stronger. 📶😂",
+"Girl, are you a software update? Because ever since you appeared, my heart keeps restarting. 💻💘",
+"Are you Ghana jollof? Because I’ve met plenty of options, but somehow you’re the one I’m defending with my whole chest. 🇬🇭😂❤️",
+"I was going to play it cool, but then you smiled and my brain submitted a resignation letter. 🫠💗",
+"Are you my favourite song? Because I keep replaying you in my head and I’m not even trying to skip. 🎶😍",
+"Do you have a map? Because I took one look at you and forgot every plan I had for today. 🗺️😂",
+"Are you a bank alert? Because my heart just made a loud notification and I need to check what you did to me. 💸💓",
+"Are you gravity? Because no matter how hard I try to be composed, I keep falling for you. And honestly, I’m not appealing the decision. 😭❤️",
+"Quick question: are you always this dangerously cute, or did you dress up specifically to make me forget my own name? 😂💘",
+"I had a smooth line ready, but you walked in and my confidence went into airplane mode. ✈️😭❤️",
+"Are you a charger? Because I was on 1% before you showed up. 🔋😘",
+"Girl, you must be a password, because I’ve been trying to figure you out and I already know I want to keep you safe. 🔐💗",
+"If beauty were a crime, I’d be your lawyer… mostly because I’d volunteer to visit you every day. 👀😂❤️",
+"I’m not saying you’re the reason I check my phone, but my screen time has some very suspicious evidence. 📱💘",
+"Are you a deadline? Because my heart starts racing whenever you get close. 😭❤️"
+];
+let lastPickup=-1;
+function randomPickupLine(){let i=Math.floor(Math.random()*pickupLines.length);if(pickupLines.length>1&&i===lastPickup)i=(i+1+Math.floor(Math.random()*(pickupLines.length-1)))%pickupLines.length;lastPickup=i;return pickupLines[i]}
+$('generatePickup').addEventListener('click',()=>{$('message').value=randomPickupLine();$('message').focus();toast('Fresh pickup line unlocked. Use it or roll again 😂💘')});
 function payload(){return {v:1,y:youData,h:herData,n:$('herName').value.trim(),s:$('yourName').value.trim(),m:$('message').value.trim(),e:$('ending').value.trim(),t:theme}}
-function create(){if(!youData||!herData){toast('Upload both pictures first 💗');return}if(!$('herName').value.trim()){toast('Add her name to make it personal ✨');$('herName').focus();return}const data=payload();render(data);try{const hash=b64encode(JSON.stringify(data));shareUrl=location.href.split('#')[0]+'#surprise='+hash;if(shareUrl.length>180000){toast('Link may be too long for some apps. Try smaller pictures.');}else toast('Your surprise is ready! Copy the link to share.')}catch{toast('Surprise made! Sharing link could not be prepared.')}}$('create').addEventListener('click',create);
+
+function create(){if(!youData||!herData){toast('Upload both pictures first 💗');return}if(!$('herName').value.trim()){toast('Add her name to make it personal ✨');$('herName').focus();return}if(!$('message').value.trim())$('message').value=randomPickupLine();const data=payload();render(data);try{const hash=b64encode(JSON.stringify(data));shareUrl=location.href.split('#')[0]+'#surprise='+hash;if(shareUrl.length>180000){toast('Link may be too long for some apps. Try smaller pictures.');}else toast('Your surprise is ready! Copy the link to share.')}catch{toast('Surprise made! Sharing link could not be prepared.')}}$('create').addEventListener('click',create);
 $('share').addEventListener('click',async()=>{if(!shareUrl){toast('Create the surprise first.');return}try{await navigator.clipboard.writeText(shareUrl);toast('Link copied! Send it to her 💌')}catch{const t=document.createElement('textarea');t.value=shareUrl;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('Link copied! Send it to her 💌')}catch{prompt('Copy your surprise link:',shareUrl)}t.remove()}});
 $('whatsapp').addEventListener('click',()=>{if(!shareUrl){toast('Create the surprise first.');return}window.open('https://wa.me/?text='+encodeURIComponent('I made a little surprise for you ❤️ Open this: '+shareUrl),'_blank','noopener')});
 $('replay').addEventListener('click',()=>{const el=$('result');el.classList.remove('show');void el.offsetWidth;el.classList.add('show');celebrate()});
