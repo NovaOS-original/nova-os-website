@@ -161,8 +161,6 @@ document.getElementById('memoryRestart')?.addEventListener('click',startMemory);
 document.getElementById('newCompliment')?.addEventListener('click',pickCompliment);
 renderQuiz();startMemory();pickCompliment();
 \n
-</script>
-
 /* LoveSpark extra experiences: isolated to avoid collisions with the main app */
 (function(){
  const gift=document.getElementById('giftOpen'),giftMessage=document.getElementById('giftMessage');
@@ -182,5 +180,7 @@ renderQuiz();startMemory();pickCompliment();
  function chime(){if(!audioCtx||audioCtx.state!=='running')return;const now=audioCtx.currentTime;[523.25,659.25,783.99].forEach((freq,i)=>{const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sine';osc.frequency.value=freq;gain.gain.setValueAtTime(0.0001,now+i*.17);gain.gain.exponentialRampToValueAtTime(.045,now+i*.17+.04);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.17+.42);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now+i*.17);osc.stop(now+i*.17+.45)})}
  soundBtn?.addEventListener('click',async()=>{if(!playing){const AC=window.AudioContext||window.webkitAudioContext;if(!AC){soundBtn.textContent='Sound unavailable in this browser';return}audioCtx=audioCtx||new AC();if(audioCtx.state==='suspended')await audioCtx.resume();playing=true;soundBtn.textContent='♫ Turn chimes off';soundBtn.setAttribute('aria-pressed','true');chime();timer=setInterval(chime,5200)}else{playing=false;clearInterval(timer);soundBtn.textContent='♫ Turn chimes on';soundBtn.setAttribute('aria-pressed','false');if(audioCtx&&audioCtx.state==='running')audioCtx.suspend()}});
 })();
+
+</script>
 
 </body></html>
