@@ -238,8 +238,9 @@ renderQuiz();startMemory();pickCompliment();
  play?.addEventListener('click',start);
  again?.addEventListener('click',()=>{pick();start()});
  pick();
- if(location.hash.startsWith('#surprise=')){
-   // Attempt autoplay on open; if blocked, retry synchronously on the visitor's first page interaction.
+ const hasShortSurprise=new URLSearchParams(location.search).has('s');
+ if(hasShortSurprise||location.hash.startsWith('#surprise=')){
+   // Attempt autoplay for both short (?s=) and legacy (#surprise=) links. Mobile browsers may block sound until a real user gesture.
    start();
    let unlocked=false;
    const unlockOnFirstTouch=()=>{
