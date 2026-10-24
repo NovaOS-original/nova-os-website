@@ -59,6 +59,7 @@
   <div class="song-actions">
     <button class="secondary" type="button" id="playLoveSong">▶ Play my love song</button>
     <button class="secondary" type="button" id="randomLoveSong">🎲 Pick another</button>
+    <button class="secondary" type="button" id="openLoveSong">Open song on YouTube ↗</button>
   </div>
   <iframe class="song-frame" id="loveSongFrame" title="Random love song video" hidden allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div><div class="result-actions"><button class="primary" style="width:auto;margin:0" id="share">Copy surprise link ↗</button><button class="secondary" id="whatsapp">Send on WhatsApp</button><button class="secondary" id="replay">Replay the magic ♥</button></div><p class="notice">Anyone with this link can view the surprise. Only share it with the intended person.</p></div></div></section>
@@ -219,6 +220,7 @@ renderQuiz();startMemory();pickCompliment();
  const title=document.getElementById('loveSongTitle');
  const play=document.getElementById('playLoveSong');
  const again=document.getElementById('randomLoveSong');
+ const openSong=document.getElementById('openLoveSong');
  function pick(){
    let next=songs[Math.floor(Math.random()*songs.length)];
    if(songs.length>1&&chosen&&next.id===chosen.id)next=songs[(songs.findIndex(s=>s.id===chosen.id)+1+Math.floor(Math.random()*(songs.length-1)))%songs.length];
@@ -237,25 +239,29 @@ renderQuiz();startMemory();pickCompliment();
  }
  play?.addEventListener('click',start);
  again?.addEventListener('click',()=>{pick();start()});
+ openSong?.addEventListener('click',()=>{
+   if(!chosen)pick();
+   window.open('https://www.youtube.com/watch?v='+encodeURIComponent(chosen.id)+'&t='+chosen.start+'s','_blank','noopener');
+ });
  pick();
  const hasShortSurprise=new URLSearchParams(location.search).has('s');
  if(hasShortSurprise||location.hash.startsWith('#surprise=')){
-   // Attempt autoplay for both short (?s=) and legacy (#surprise=) links. Mobile browsers may block sound until a real user gesture.
+   // Try autoplay once. Mobile browsers can block audible autoplay, so never reload the player on an arbitrary first tap.
    start();
    let unlocked=false;
-   const unlockOnFirstTouch=()=>{
+   const clearAutoplayRetry=()=>{
      if(unlocked)return;
      unlocked=true;
-     start();
-     document.removeEventListener('pointerdown',unlockOnFirstTouch,true);
-     document.removeEventListener('touchstart',unlockOnFirstTouch,true);
-     document.removeEventListener('keydown',unlockOnFirstTouch,true);
-     document.removeEventListener('click',unlockOnFirstTouch,true);
+     if(play)play.textContent='▶ Tap to play the song';
+     document.removeEventListener('pointerdown',clearAutoplayRetry,true);
+     document.removeEventListener('touchstart',clearAutoplayRetry,true);
+     document.removeEventListener('keydown',clearAutoplayRetry,true);
+     document.removeEventListener('click',clearAutoplayRetry,true);
    };
-   document.addEventListener('pointerdown',unlockOnFirstTouch,true);
-   document.addEventListener('touchstart',unlockOnFirstTouch,{capture:true,passive:true});
-   document.addEventListener('keydown',unlockOnFirstTouch,true);
-   document.addEventListener('click',unlockOnFirstTouch,true);
+   document.addEventListener('pointerdown',clearAutoplayRetry,true);
+   document.addEventListener('touchstart',clearAutoplayRetry,{capture:true,passive:true});
+   document.addEventListener('keydown',clearAutoplayRetry,true);
+   document.addEventListener('click',clearAutoplayRetry,true);
  }
 })();
 
