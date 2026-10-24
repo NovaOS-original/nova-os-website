@@ -239,8 +239,22 @@ renderQuiz();startMemory();pickCompliment();
  again?.addEventListener('click',()=>{pick();start()});
  pick();
  if(location.hash.startsWith('#surprise=')){
-   // No blocking cover: reveal the surprise immediately and attempt playback on link open.
+   // Attempt autoplay on open; if blocked, retry synchronously on the visitor's first page interaction.
    start();
+   let unlocked=false;
+   const unlockOnFirstTouch=()=>{
+     if(unlocked)return;
+     unlocked=true;
+     start();
+     document.removeEventListener('pointerdown',unlockOnFirstTouch,true);
+     document.removeEventListener('touchstart',unlockOnFirstTouch,true);
+     document.removeEventListener('keydown',unlockOnFirstTouch,true);
+     document.removeEventListener('click',unlockOnFirstTouch,true);
+   };
+   document.addEventListener('pointerdown',unlockOnFirstTouch,true);
+   document.addEventListener('touchstart',unlockOnFirstTouch,{capture:true,passive:true});
+   document.addEventListener('keydown',unlockOnFirstTouch,true);
+   document.addEventListener('click',unlockOnFirstTouch,true);
  }
 })();
 
