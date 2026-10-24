@@ -26,14 +26,6 @@
 .song-card .song-frame[hidden]{display:none}
 
 
-/* First-open soundtrack prompt: browsers require a visitor gesture for audible playback */
-.music-gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 50% 35%,#52244eF5,#100818F7);backdrop-filter:blur(12px);text-align:center}
-.music-gate[hidden]{display:none}
-.music-gate-card{width:min(440px,100%);padding:30px 22px;border:1px solid #ff91c077;border-radius:26px;background:linear-gradient(145deg,#321b3d,#1b1128);box-shadow:0 24px 90px #0009;animation:rise .65s both}
-.music-gate-heart{font-size:3.5rem;animation:pulse 1.4s infinite}
-.music-gate h2{font-size:clamp(1.8rem,7vw,2.5rem);margin:12px 0;background:linear-gradient(90deg,#fff,#ffb9d8,#ffe0a1);color:transparent;background-clip:text}
-.music-gate p{color:var(--muted);line-height:1.7}
-.music-gate button{width:100%;border:0;border-radius:14px;padding:15px 18px;margin-top:12px;color:#2a1123;font-weight:900;background:linear-gradient(100deg,#ff85b7,#ffd68a)}
 
 </style>
 </head>
@@ -63,7 +55,7 @@
 <div class="song-card" id="loveSongCard">
   <div class="eyebrow">A soundtrack picked by fate 🎶</div>
   <h3 id="loveSongTitle">Your random love song</h3>
-  <p id="loveSongHint">A little love-song surprise is waiting. Tap play to start it—most browsers block sound until you interact with the page.</p>
+  <p id="loveSongHint">A sweet part of a love song, picked at random, is ready for your moment. ♡</p>
   <div class="song-actions">
     <button class="secondary" type="button" id="playLoveSong">▶ Play my love song</button>
     <button class="secondary" type="button" id="randomLoveSong">🎲 Pick another</button>
@@ -212,14 +204,15 @@ renderQuiz();startMemory();pickCompliment();
 })();
 
 
-/* Random romantic soundtrack. A first-open tap unlocks audio on browsers that block autoplay. */
+/* Random romantic soundtrack: attempt immediate autoplay on shared surprise links.
+   Audible autoplay remains subject to each browser's playback policy. */
 (function(){
  const songs=[
-  {id:'2Vv-BfVoq4g',title:'Perfect — Ed Sheeran'},
-  {id:'450p7goxZqg',title:'All of Me — John Legend'},
-  {id:'LjhCEhWiKXk',title:'Just the Way You Are — Bruno Mars'},
-  {id:'vGJTaP6anOU',title:"Can't Help Falling in Love — Elvis Presley"},
-  {id:'GxldQ9eX2wo',title:'Until I Found You — Stephen Sanchez'}
+  {id:'2Vv-BfVoq4g',title:'Perfect — Ed Sheeran',start:55},
+  {id:'450p7goxZqg',title:'All of Me — John Legend',start:61},
+  {id:'LjhCEhWiKXk',title:'Just the Way You Are — Bruno Mars',start:49},
+  {id:'vGJTaP6anOU',title:"Can't Help Falling in Love — Elvis Presley",start:43},
+  {id:'GxldQ9eX2wo',title:'Until I Found You — Stephen Sanchez',start:47}
  ];
  let chosen=null;
  const frame=document.getElementById('loveSongFrame');
@@ -236,26 +229,20 @@ renderQuiz();startMemory();pickCompliment();
  }
  function start(){
    if(!chosen)pick();
-   if(frame){frame.src='https://www.youtube-nocookie.com/embed/'+chosen.id+'?autoplay=1&rel=0&playsinline=1';frame.hidden=false}
-   if(play)play.textContent='♫ Playing / restart song';
+   if(frame){
+     frame.src='https://www.youtube-nocookie.com/embed/'+chosen.id+'?autoplay=1&start='+chosen.start+'&rel=0&playsinline=1';
+     frame.hidden=false;
+   }
+   if(play)play.textContent='♫ Restart song';
  }
  play?.addEventListener('click',start);
  again?.addEventListener('click',()=>{pick();start()});
  pick();
  if(location.hash.startsWith('#surprise=')){
-   // Autoplay is attempted, but browsers commonly block audible playback before a tap.
+   // No blocking cover: reveal the surprise immediately and attempt playback on link open.
    start();
-   const gate=document.createElement('div');
-   gate.className='music-gate';
-   gate.setAttribute('role','dialog');
-   gate.setAttribute('aria-modal','true');
-   gate.setAttribute('aria-labelledby','musicGateTitle');
-   gate.innerHTML='<div class="music-gate-card"><div class="music-gate-heart">💌</div><div class="eyebrow">A little surprise for you</div><h2 id="musicGateTitle">Your moment starts here</h2><p>Someone made this just for you—with a little love and a song chosen at random. Tap below to open your surprise with music. ♡</p><button type="button" id="musicGateStart">Open my surprise & play the song 🎶</button><p style="font-size:.78rem;margin-bottom:0">One tap lets your browser start the music.</p></div>';
-   document.body.appendChild(gate);
-   const openGate=()=>{start();gate.hidden=true;gate.remove();document.getElementById('result')?.scrollIntoView({behavior:'smooth',block:'start'})};
-   gate.querySelector('#musicGateStart').addEventListener('click',openGate);
  }
-})();
+
 
 </script>
 
