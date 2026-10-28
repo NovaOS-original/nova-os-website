@@ -1,0 +1,60 @@
+name: LoveSpark security and syntax checks
+
+on:
+  push:
+    paths:
+      - "love-spark/**"
+      - "supabase/functions/lovespark-link/**"
+      - ".github/workflows/lovespark-security.yml"
+  pull_request:
+    paths:
+      - "love-spark/**"
+      - "supabase/functions/lovespark-link/**"
+      - ".github/workflows/lovespark-security.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check inline JavaScript syntax
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path("love-spark/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script\\s*>", html, flags=re.I | re.S)
+          if not scripts:
+              raise SystemExit("No inline JavaScript blocks found")
+          for index, script in enumerate(scripts, start=1):
+              Path(f"/tmp/lovespark-script-{index}.js").write_text(script, encoding="utf-8")
+          print(f"Extracted {len(scripts)} inline script block(s)")
+          PY
+          for file in /tmp/lovespark-script-*.js; do node --check "$file"; done
+      - name: Fail if private credentials appear in the public page
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path("love-spark/index.html").read_text(encoding="utf-8")
+          forbidden = [
+              r"SUPABASE_SERVICE_ROLE_KEY",
+              r"sb_secret_[A-Za-z0-9_-]{12,}",
+              r"sk-[A-Za-z0-9_-]{20,}",
+              r"AIza[0-9A-Za-z_-]{30,}",
+          ]
+          for pattern in forbidden:
+              if re.search(pattern, text):
+                  raise SystemExit(f"Potential private credential found (pattern: {pattern})")
+          print("No common private-key patterns found in LoveSpark frontend")
+          PY
