@@ -32,7 +32,7 @@ jobs:
           from pathlib import Path
           import re
           html = Path("love-spark/index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script\\s*>", html, flags=re.I | re.S)
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script\s*>", html, flags=re.I | re.S)
           if not scripts:
               raise SystemExit("No inline JavaScript blocks found")
           for index, script in enumerate(scripts, start=1):
