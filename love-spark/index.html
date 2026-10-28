@@ -7,6 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Create a cinematic romantic surprise with two photos and a personal message.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com https://*.ytimg.com; connect-src 'self' https://xtchvetdluriblzyknhp.supabase.co; frame-src https://www.youtube-nocookie.com https://www.youtube.com; upgrade-insecure-requests">
 <title>LoveSpark — A little surprise for her</title>
 <style>
 :root{color-scheme:dark;--bg:#160d24;--panel:#21142f;--pink:#ff6ba8;--gold:#ffd68a;--text:#fff7fc;--muted:#c7b5cc;--line:#563653}
@@ -29,6 +30,23 @@
 
 
 
+
+/* LoveSpark 2.0: lively micro-interactions with restrained paint/compositing cost */
+:root{scroll-padding-top:18px}
+button,.upload,.theme,.step,.story-stop,.romance-card,.game-box{ -webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+.primary,.secondary,.game-btn,.game-tab,.theme,.quiz-option,.heart-card,.gift-button{transition:transform .18s ease,filter .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease}
+button:active:not(:disabled){transform:scale(.975)}
+.primary:focus-visible,.game-btn:focus-visible,.secondary:focus-visible{box-shadow:0 0 0 4px #ffd68a35}
+.panel,.romance-card,.game-box,.step{transition:border-color .22s ease,box-shadow .22s ease}
+.panel:hover,.romance-card:hover,.game-box:hover{border-color:#ff8cba55}
+.upload[aria-busy="true"]{opacity:.72;cursor:progress}
+.upload[aria-busy="true"] .preview{animation:softPulse 1.1s ease-in-out infinite alternate}
+@keyframes softPulse{to{filter:brightness(1.18)}}
+.ambient-paused .stars i,.ambient-paused .hearts span{animation-play-state:paused!important}
+@media(min-width:761px){.panel{backdrop-filter:blur(8px)}}
+@media(max-width:760px){.panel{backdrop-filter:none}.stars i{width:2px;height:2px}.result-card:before{animation-duration:28s}}
+@media(prefers-reduced-motion:reduce){button,.upload,.theme,.step,.story-stop,.romance-card,.game-box{transition:none!important}.upload[aria-busy="true"] .preview{animation:none!important}}
 
 /* LoveSpark polish: clearer focus, richer depth, safer mobile rendering */
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
@@ -162,8 +180,8 @@ async function create(){if(!youData||!herData){toast('Upload both pictures first
 $('share').addEventListener('click',async()=>{if(!shareUrl){toast('Create the surprise first.');return}try{await navigator.clipboard.writeText(shareUrl);toast('Link copied! Send it to her 💌')}catch{const t=document.createElement('textarea');t.value=shareUrl;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('Link copied! Send it to her 💌')}catch{prompt('Copy your surprise link:',shareUrl)}t.remove()}});
 $('whatsapp').addEventListener('click',()=>{if(!shareUrl){toast('Create the surprise first.');return}window.open('https://wa.me/?text='+encodeURIComponent('I made a little surprise for you ❤️ Open this: '+shareUrl),'_blank','noopener')});
 $('replay').addEventListener('click',()=>{const el=$('result');el.classList.remove('show');void el.offsetWidth;el.classList.add('show');celebrate()});
-function celebrate(){const h=$('hearts');for(let i=0;i<24;i++){const s=document.createElement('span');s.textContent=['♥','♡','✦','❤'][Math.floor(Math.random()*4)];s.style.left=Math.random()*100+'%';s.style.fontSize=(14+Math.random()*22)+'px';s.style.animationDuration=(4+Math.random()*5)+'s';h.appendChild(s);setTimeout(()=>s.remove(),9500)}}
-(function stars(){for(let i=0;i<55;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*4+'s';$('stars').appendChild(s)}})();
+function celebrate(){if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const h=$('hearts');const max=window.matchMedia&&window.matchMedia('(max-width: 760px)').matches?12:20;while(h.childElementCount>max*2)h.firstElementChild.remove();for(let i=0;i<max;i++){const s=document.createElement('span');s.textContent=['♥','♡','✦','❤'][Math.floor(Math.random()*4)];s.style.left=Math.random()*100+'%';s.style.fontSize=(14+Math.random()*22)+'px';s.style.animationDuration=(4+Math.random()*5)+'s';h.appendChild(s);setTimeout(()=>s.remove(),9500)}}
+(function stars(){const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;const compact=window.matchMedia&&window.matchMedia('(max-width: 760px)').matches;const count=reduced?0:(compact?20:38);const fragment=document.createDocumentFragment();for(let i=0;i<count;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*4+'s';fragment.appendChild(s)}$('stars').appendChild(fragment);document.addEventListener('visibilitychange',()=>document.body.classList.toggle('ambient-paused',document.hidden));})();
 (async function loadShared(){const params=new URLSearchParams(location.search);const shortCode=params.get('s');const hideBuilder=()=>{document.querySelector('.hero').classList.add('hidden');document.querySelector('.how').classList.add('hidden');document.querySelector('.top .tag').textContent='A surprise made just for you ♡'};if(shortCode){hideBuilder();try{const response=await fetch('https://xtchvetdluriblzyknhp.supabase.co/functions/v1/lovespark-link?code='+encodeURIComponent(shortCode));const result=await response.json();if(!response.ok||!validSharedPayload(result.payload))throw new Error(result.error||'This surprise link is expired or has invalid details.');render(result.payload,true);hideBuilder()}catch(err){toast(err&&err.message?err.message:'This surprise link could not be loaded. Ask the sender for a new one.')}return}if(!location.hash.startsWith('#surprise='))return;try{const data=JSON.parse(b64decode(location.hash.slice(10)));if(!validSharedPayload(data))throw Error();render(data,true);hideBuilder()}catch{toast('This surprise link looks incomplete. Ask the sender for a new one.')}})();
 /* LoveSpark mini-games and warm surprises */
 const compliments=[
