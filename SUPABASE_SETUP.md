@@ -33,6 +33,17 @@ Only after the database and function are ready, update `supabase-config.js` with
 - Activity rows have `expires_at` timestamps 90 days out. Configure a scheduled cleanup/retention job if you need automatic deletion; the timestamp alone does not delete rows.
 - Add Supabase Auth rate limits, CAPTCHA/bot protection and monitor Edge Function logs before broad public rollout.
 
+## 6. LoveSpark short-link service
+The LoveSpark feature lives at `love-spark/` and uses the `lovespark-link` Edge Function. Its source is versioned at `supabase/functions/lovespark-link/index.ts`; its atomic rate-limit table and restricted RPC are defined in `supabase/migrations/202610280002_lovespark_atomic_rate_limits.sql`.
+
+Deploy/update it from the repository root with:
+```sh
+supabase functions deploy lovespark-link
+```
+The hosted function uses Supabase's server-provided `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Never copy the service-role key into HTML, JavaScript, or GitHub. The function limits creation to 5 requests per IP-hash per hour and reads to 120 per minute, validates payloads, restricts create requests to the website origin, and fails closed if its limiter cannot be reached. Only a one-way hash of the client IP is stored for rate limiting; raw IPs are not persisted by this limiter. Shared surprise links expire after 24 hours; scheduled cleanup controls physical deletion separately from expiry checks.
+
+The browser uses a restrictive Content Security Policy and reduced-motion/performance-aware animations. Since GitHub Pages is static, HTTP response headers such as HSTS, `frame-ancestors`, and server-level security headers should be configured at the hosting/CDN layer if a custom domain or proxy is added. Browser-delivered code remains inspectable; do not put secrets in it.
+
 ## Privacy and security notes
 - Google passwords are handled by Supabase Auth and never stored by NOVA.
 - Chat prompts are sent to Gemini for response generation but are not stored in the activity table.
